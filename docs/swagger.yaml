@@ -1,0 +1,61 @@
+basePath: /service
+definitions:
+  model.User:
+    properties:
+      full_name:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  schema.Empty:
+    type: object
+  schema.Response-model_User:
+    properties:
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/model.User'
+      status:
+        type: boolean
+    type: object
+  schema.Response-schema_Empty:
+    properties:
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/schema.Empty'
+      status:
+        type: boolean
+    type: object
+host: 127.0.0.1:8000
+info:
+  contact: {}
+  description: service
+  title: service
+paths:
+  /api/v1/user/all:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.Response-model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.Response-schema_Empty'
+      summary: Получить всех пользователей
+      tags:
+      - user
+schemes:
+- http
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
