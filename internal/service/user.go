@@ -4,10 +4,12 @@ import (
 	"context"
 	"service/internal/model"
 	"service/internal/repository"
+	"service/internal/schema"
 )
 
 type User interface {
 	GetAll(ctx context.Context) ([]model.User, error)
+	Create(ctx context.Context, data schema.UserCreate) (model.User, error)
 }
 
 type UserService struct {
@@ -20,15 +22,22 @@ func NewUserService(userRepo repository.User) *UserService {
 	}
 }
 
-func (u UserService) GetAll(ctx context.Context) ([]model.User, error) {
-	return []model.User{
-		{
-			UserID:   1,
-			FullName: "A",
-		},
-		{
-			UserID:   2,
-			FullName: "B",
-		},
-	}, nil
+func (s *UserService) GetAll(ctx context.Context) ([]model.User, error) {
+	users, err := s.userRepo.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (s *UserService) Create(ctx context.Context, data schema.UserCreate) (model.User, error) {
+	user, err := s.userRepo.Create(ctx, model.User{
+		FullName: data.FullName,
+	})
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }

@@ -8,8 +8,8 @@ RUN go mod tidy
 
 ADD ./ /app
 
-RUN go generate ./...
-
 RUN go build -o index
+
+EXPOSE 8000
 
 ENTRYPOINT ["/app/index"]

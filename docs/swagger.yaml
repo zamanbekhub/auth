@@ -9,6 +9,17 @@ definitions:
     type: object
   schema.Empty:
     type: object
+  schema.Response-array_model_User:
+    properties:
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
+      status:
+        type: boolean
+    type: object
   schema.Response-model_User:
     properties:
       message:
@@ -27,12 +38,42 @@ definitions:
       status:
         type: boolean
     type: object
+  schema.UserCreate:
+    properties:
+      full_name:
+        type: string
+    type: object
 host: 127.0.0.1:8000
 info:
   contact: {}
   description: service
   title: service
 paths:
+  /api/v1/user:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Создание пользователыя
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UserCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.Response-model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.Response-schema_Empty'
+      summary: Создание пользователыя
+      tags:
+      - user
   /api/v1/user/all:
     get:
       consumes:
@@ -43,7 +84,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/schema.Response-model_User'
+            $ref: '#/definitions/schema.Response-array_model_User'
         "400":
           description: Bad Request
           schema:

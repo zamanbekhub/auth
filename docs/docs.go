@@ -16,6 +16,45 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/user": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Создание пользователыя",
+                "parameters": [
+                    {
+                        "description": "Создание пользователыя",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Response-model_User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Response-schema_Empty"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/user/all": {
             "get": {
                 "consumes": [
@@ -32,7 +71,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/schema.Response-model_User"
+                            "$ref": "#/definitions/schema.Response-array_model_User"
                         }
                     },
                     "400": {
@@ -60,6 +99,23 @@ const docTemplate = `{
         "schema.Empty": {
             "type": "object"
         },
+        "schema.Response-array_model_User": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.User"
+                    }
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
         "schema.Response-model_User": {
             "type": "object",
             "properties": {
@@ -85,6 +141,14 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "boolean"
+                }
+            }
+        },
+        "schema.UserCreate": {
+            "type": "object",
+            "properties": {
+                "full_name": {
+                    "type": "string"
                 }
             }
         }
