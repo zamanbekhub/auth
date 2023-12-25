@@ -1,18 +1,18 @@
 package app
 
 import (
+	"auth/internal/config"
+	httpDelivery "auth/internal/delivery/http"
+	"auth/internal/repository"
+	httpServer "auth/internal/server"
+	auth "auth/internal/service"
+	"auth/pkg/db/postgresql"
 	"context"
 	"errors"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
-	"service/internal/config"
-	httpDelivery "service/internal/delivery/http"
-	"service/internal/repository"
-	httpServer "service/internal/server"
-	"service/internal/service"
-	"service/pkg/db/postgresql"
 	"syscall"
 	"time"
 )
@@ -27,9 +27,9 @@ func Run(cfg *config.Config) {
 
 	repos := repository.NewRepositories(postgresDB)
 
-	services := service.NewServices(repos)
+	auths := auth.NewServices(repos)
 
-	handler := httpDelivery.NewHandlerDelivery(logger, services, "service")
+	handler := httpDelivery.NewHandlerDelivery(logger, auths, "auth")
 
 	srv, err := httpServer.NewServer(cfg, handler)
 	if err != nil {

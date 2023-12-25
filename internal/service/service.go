@@ -1,6 +1,8 @@
 package service
 
-import "service/internal/repository"
+import (
+	"auth/internal/repository"
+)
 
 type Services struct {
 	User User
@@ -8,6 +10,6 @@ type Services struct {
 
 func NewServices(repos *repository.Repository) *Services {
 	return &Services{
-		User: NewUserService(repos.User),
+		User: NewUserauth(repos.User),
 	}
 }

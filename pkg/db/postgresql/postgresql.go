@@ -1,13 +1,12 @@
 package postgresql
 
 import (
-	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func NewDB(dsn string) (*gorm.DB, error) {
-	fmt.Println("dsn =", dsn)
+	//fmt.Println("dsn =", dsn)
 	db, err := gorm.Open(
 		postgres.New(postgres.Config{
 			DSN:                  dsn,

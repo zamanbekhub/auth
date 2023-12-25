@@ -7,6 +7,16 @@ import (
 	"sync"
 )
 
+type AppEnvironment string
+
+const (
+	PRODUCTION  AppEnvironment = "prod"
+	STAGE       AppEnvironment = "stage"
+	DEVELOPMENT AppEnvironment = "dev"
+	LOCAL       AppEnvironment = "local"
+	QA          AppEnvironment = "qa"
+)
+
 type (
 	Config struct {
 		Service  *Service
@@ -14,7 +24,8 @@ type (
 	}
 
 	Service struct {
-		Port string `envconfig:"port" default:"8000"`
+		Port        string         `envconfig:"port" default:"8000"`
+		Environment AppEnvironment `envconfig:"ENVIRONMENT" default:"local"`
 	}
 
 	Database struct {

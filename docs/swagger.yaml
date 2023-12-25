@@ -1,13 +1,27 @@
-basePath: /service
+basePath: /auth
 definitions:
   model.User:
     properties:
       full_name:
         type: string
+      password:
+        type: string
       user_id:
         type: integer
+      username:
+        type: string
     type: object
   schema.Empty:
+    type: object
+  schema.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
     type: object
   schema.Response-array_model_User:
     properties:
@@ -40,16 +54,66 @@ definitions:
     type: object
   schema.UserCreate:
     properties:
-      full_name:
+      password:
         type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
     type: object
 host: 127.0.0.1:8000
 info:
   contact: {}
-  description: service
-  title: service
+  description: auth
+  title: auth
 paths:
-  /api/v1/user:
+  /api/v1/user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Логин пользователя
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.Response-array_model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.Response-schema_Empty'
+      summary: Получить всех пользователей
+      tags:
+      - user
+  /api/v1/user/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.Response-array_model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.Response-schema_Empty'
+      security:
+      - BearerAuth: []
+      summary: Получить всех пользователей
+      tags:
+      - user
+  /api/v1/user/register:
     post:
       consumes:
       - application/json
@@ -72,24 +136,6 @@ paths:
           schema:
             $ref: '#/definitions/schema.Response-schema_Empty'
       summary: Создание пользователыя
-      tags:
-      - user
-  /api/v1/user/all:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/schema.Response-array_model_User'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/schema.Response-schema_Empty'
-      summary: Получить всех пользователей
       tags:
       - user
 schemes:

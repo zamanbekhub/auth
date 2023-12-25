@@ -1,13 +1,14 @@
 package repository
 
 import (
+	"auth/internal/model"
 	"context"
+	"errors"
 	"gorm.io/gorm"
-	"service/internal/model"
 )
 
 type User interface {
-	GetAll(ctx context.Context) ([]model.User, error)
+	Get(ctx context.Context, params GetUserParams) (user model.User, err error)
 	Create(ctx context.Context, user model.User) (model.User, error)
 }
 
@@ -21,18 +22,6 @@ func NewUserDB(db *gorm.DB) *UserDB {
 	}
 }
 
-func (r *UserDB) GetAll(ctx context.Context) (users []model.User, err error) {
-	err = r.db.WithContext(ctx).
-		Model(&model.User{}).
-		Find(&users).
-		Error
-	if err != nil {
-		return nil, err
-	}
-
-	return users, nil
-}
-
 func (r *UserDB) Create(ctx context.Context, user model.User) (model.User, error) {
 	err := r.db.WithContext(ctx).Create(&user).Error
 	if err != nil {
@@ -40,4 +29,34 @@ func (r *UserDB) Create(ctx context.Context, user model.User) (model.User, error
 	}
 
 	return user, nil
+}
+
+func (r *UserDB) Get(
+	ctx context.Context,
+	params GetUserParams,
+) (user model.User, err error) {
+	query := r.db.Model(&model.User{})
+
+	if params.UserID != nil {
+		query = query.Where(`user_id = ?`, *params.UserID)
+	}
+	if params.UserName != nil {
+		query = query.Where(`username = ?`, *params.UserName)
+	}
+
+	err = query.First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return model.User{}, err
+		}
+
+		return model.User{}, err
+	}
+
+	return user, nil
+}
+
+type GetUserParams struct {
+	UserID   *uint
+	UserName *string
 }

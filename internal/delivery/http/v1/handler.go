@@ -1,8 +1,8 @@
 package v1
 
 import (
+	"auth/internal/service"
 	"github.com/gin-gonic/gin"
-	"service/internal/service"
 )
 
 type Handler struct {

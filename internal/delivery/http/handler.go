@@ -1,15 +1,15 @@
 package http
 
 import (
-	"github.com/Depado/ginprom"
+	"auth/internal/common/middleware"
+	"auth/internal/config"
+	v1 "auth/internal/delivery/http/v1"
+	"auth/internal/service"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
-	"service/internal/common/middleware"
-	"service/internal/config"
-	v1 "service/internal/delivery/http/v1"
-	"service/internal/service"
 )
 
 type Handler struct {
@@ -32,12 +32,20 @@ func NewHandlerDelivery(
 
 func (h *Handler) Init(cfg *config.Config) (*gin.Engine, error) {
 	app := gin.New()
-	p := ginprom.New(
-		ginprom.Engine(app),
-		ginprom.Subsystem("gin"),
-		ginprom.Path("/metrics"),
-	)
-	app.Use(middleware.Cors(), p.Instrument())
+	//p := ginprom.New(
+	//	ginprom.Engine(app),
+	//	ginprom.Subsystem("gin"),
+	//	ginprom.Path("/metrics"),
+	//)
+	//p.AddCustomCounter("custom", "Some help text to provide", []string{"label"})
+	//p.IncrementCounterValue("custom", []string{"1"})
+	//p.IncrementCounterValue("custom", []string{"1"})
+	//app.Use(p.Instrument())
+
+	app.Use(middleware.Cors())
+	//app.Use(middleware.JwtAuthMiddleware())
+	app.GET("/metrics", gin.WrapH(promhttp.Handler()))
+
 	h.initAPI(app)
 	return app, nil
 }

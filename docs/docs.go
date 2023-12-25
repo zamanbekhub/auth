@@ -16,7 +16,79 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/user": {
+        "/api/v1/user/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получить всех пользователей",
+                "parameters": [
+                    {
+                        "description": "Логин пользователя",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.LoginInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Response-array_model_User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Response-schema_Empty"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получить всех пользователей",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Response-array_model_User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Response-schema_Empty"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/register": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -54,34 +126,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/api/v1/user/all": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Получить всех пользователей",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/schema.Response-array_model_User"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/schema.Response-schema_Empty"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -91,13 +135,34 @@ const docTemplate = `{
                 "full_name": {
                     "type": "string"
                 },
+                "password": {
+                    "type": "string"
+                },
                 "user_id": {
                     "type": "integer"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
         "schema.Empty": {
             "type": "object"
+        },
+        "schema.LoginInput": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
         },
         "schema.Response-array_model_User": {
             "type": "object",
@@ -146,8 +211,15 @@ const docTemplate = `{
         },
         "schema.UserCreate": {
             "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
             "properties": {
-                "full_name": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -166,10 +238,10 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "",
 	Host:             "127.0.0.1:8000",
-	BasePath:         "/service",
+	BasePath:         "/auth",
 	Schemes:          []string{"http"},
-	Title:            "service",
-	Description:      "service",
+	Title:            "auth",
+	Description:      "auth",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

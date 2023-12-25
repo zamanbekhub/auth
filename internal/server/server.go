@@ -1,13 +1,13 @@
 package server
 
 import (
+	"auth/internal/config"
 	"context"
 	"fmt"
 	"net/http"
-	"service/internal/config"
 	"time"
 
-	handler "service/internal/delivery/http"
+	handler "auth/internal/delivery/http"
 )
 
 type Server struct {

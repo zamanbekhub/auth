@@ -1,19 +1,19 @@
 package main
 
 import (
-	_ "service/docs"
-	"service/internal/app"
-	"service/internal/config"
+	_ "auth/docs"
+	"auth/internal/app"
+	"auth/internal/config"
 )
 
 //go:generate go run github.com/swaggo/swag/cmd/swag init
 
-// @title service
+// @title auth
 // @версия 1.0.0
-// @description service
+// @description auth
 //
 // @host 127.0.0.1:8000
-// @BasePath /service
+// @BasePath /auth
 // @schemes http
 
 // @securityDefinitions.apikey BearerAuth
